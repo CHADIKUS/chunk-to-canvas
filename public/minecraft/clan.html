@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FARTMAP</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg">
+    <div class="boxBg">
+      
+      <div class="title">
+        <h1>CLANS</h1>
+        <h2>take over the world!</h2>
+      </div>
+
+      <div class="sub-title">
+        <h1>JOIN A CLAN</h1>
+      </div>
+      
+
+      <div>
+        <label class="label">clan name:</label>
+        <input type="text" ><br>
+        <label class="label">player key(do /key to see):</label>
+        <input type="password"><br><br>
+        <input type="button" id="submitJoin" value="submit" onclick="submitJoin()"><br>
+      </div>
+      
+      <br><br>
+      
+      <div class="sub-title">
+        <h1>MAKE A CLAN</h1>
+      </div>
+
+      <br><br>
+
+      <div>
+        <label for="name" class="label">clan name:</label>
+        <input type="text" id="name" name="name"><br>
+        <label for="desc" class="label">clan description:</label>
+        <input type="text" id="desc" name="desc"><br>
+        <label for="radio" class="label">clan icon(a minecraft item):</label>
+        <input type="radio" class="icon" name="icon" id="book">book
+        <input type="radio" class="icon" name="icon" id="skull" value="">skull<br>
+        <label for="key" class="label">player key(do /key to see):</label>
+        <input type="password" id="key" name="name"><br><br>
+        <input type="button" id="submit" value="submit" onclick="submit()"><br>
+      </div>
+
+      <h2 id="status"></h2>
+
+      <br><br>
+
+      <div class="sub-title">
+        <h1>MANAGE YOUR CLAN</h1>
+        <h4>make sure you have a clan first</h4>
+      </div>
+
+      <br><br>
+
+      <div id="clan_manager">
+        <div class="login">
+          <label>login</label>
+          <input type="password" id="manageKey"><br><br>
+          <input type="button" id="submitManage" value="submit" onclick="submitManage()"><br>
+          
+        </div>
+        <div class="info">
+          <h1>clan name: </h1>
+          <div class="playerList">
+            <div class="playerBox" id="managerBox">
+              <br>
+
+
+              <!-- this is a template -->
+              <!-- <div class="player">
+                <br>
+                <h2>battlebrochad123</h2>
+                <br>
+                <button>remove</button>
+                <br>
+              </div> -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <script>
+        function submit(){
+          const name = document.getElementById("name").value;
+          const desc = document.getElementById("desc").value;
+          var selectedIcon = "blank"
+          if(document.getElementById("book").checked){
+            selectedIcon = "Book"
+          }
+          if(document.getElementById("skull").checked){
+            selectedIcon = "Skull"
+          }
+          const key = document.getElementById("key").value;
+
+          var user = "";
+
+          var status = "";
+
+          let xhr = new XMLHttpRequest();
+          xhr.open("POST", "http://localhost:3000/getUser")
+
+          xhr.setRequestHeader("Accept", "application/json");
+          xhr.setRequestHeader("Content-Type", "application/json");
+          
+          xhr.onload = function(){
+            if (xhr.readyState === xhr.DONE && xhr.status === 200) {
+              user = xhr.response
+              if(user != "" && user != "error"){
+    
+                let xhrNew = new XMLHttpRequest();
+                xhrNew.open("POST", "http://localhost:3000/testMC")
+      
+                xhrNew.setRequestHeader("Accept", "application/json");
+                xhrNew.setRequestHeader("Content-Type", "application/json");
+                
+                xhrNew.onload = function(){
+                    console.log(xhrNew.response)
+
+                    document.getElementById("status").innerHTML = xhrNew.response
+
+                    if(xhrNew.response == "clan_already_exists"){
+                      document.getElementById("status").innerHTML = "there is already a clan with this name, copycat"
+                    }
+                    if(xhrNew.response == "user_already_has_clan"){
+                      document.getElementById("status").innerHTML = "you already have a clan, delete and remake clan if you wanna start fresh"
+                    }
+                    if(xhrNew.response == "user_already_in_clan"){
+                      document.getElementById("status").innerHTML = "you're already in a clan, leave the clan to make a clan"
+                    }
+                    if(xhrNew.response == "success"){
+                      document.getElementById("status").innerHTML = "clan made!"
+                    }
+                }
+
+
+      
+                let dataNew = '{"name": "'+name+'","user": "'+user+'","desc": "'+desc+'","icon": "'+selectedIcon+'","members": [{"id":1,"name":"'+user+'"}]}'
+      
+                xhrNew.send(dataNew)
+              }
+            }
+          }
+
+          let data = '{"key": "'+key+'"}'
+
+          xhr.send(data)
+          
+          
+
+        } 
+        function submitManage(){
+
+          const key = document.getElementById("manageKey").value;
+
+          var user = "";
+          var clan = {}
+
+          let xhr = new XMLHttpRequest();
+          xhr.open("POST", "http://localhost:3000/getUser")
+
+          xhr.setRequestHeader("Accept", "application/json");
+          xhr.setRequestHeader("Content-Type", "application/json");
+          
+          xhr.onload = function(){
+            if (xhr.readyState === xhr.DONE && xhr.status === 200) {
+              user = xhr.response
+              if(user != "" && user != "error"){
+      
+                let xhrNew = new XMLHttpRequest();
+                xhrNew.open("POST", "http://localhost:3000/getClan")
+      
+                xhrNew.setRequestHeader("Accept", "application/json");
+                xhrNew.setRequestHeader("Content-Type", "application/json");
+
+                xhrNew.onload = function(){
+                  clan = JSON.parse(xhrNew.response)
+
+                  if (xhr.readyState === xhr.DONE && xhr.status === 200) {
+                    for(let x in clan.members){
+                        console.log(clan.members[x]["name"])
+                        var name = clan.members[x]["name"]
+    
+                        var div = document.createElement("div")
+                        div.className = "player"
+
+                        var br1 = document.createElement("br")
+                        var br2 = document.createElement("br")
+                        var br3 = document.createElement("br")
+
+                        var nameTag = document.createElement("h2")
+                        var nameNode = document.createTextNode(name)
+                        nameTag.appendChild(nameNode)
+
+                        var removeTag = document.createElement("button")
+                        var removeNode = document.createTextNode("kick player")
+                        removeTag.appendChild(removeNode)
+
+                        div.appendChild(br1)
+                        div.appendChild(nameTag)
+                        div.appendChild(br2)
+                        div.appendChild(removeTag)
+
+                        var element = document.getElementById("managerBox")
+                        element.appendChild(div)
+                        element.appendChild(br3)
+                    }
+                  }
+
+                }
+
+                let dataNew = '{"user":"'+user+'"}'
+      
+                xhrNew.send(dataNew)
+
+              }
+            }
+
+          }
+          
+          let data = '{"key": "'+key+'"}'
+
+          xhr.send(data)
+        }
+
+      </script>
+
+    </div>
+  </div>
+</body>
+</html>

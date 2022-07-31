@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>our northstar server</title>
+    
+  <style>
+    body{background-color:#363c67;color:#d8d8da;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;text-align:center}#image{display:block;margin-left:auto;margin-right:auto;background-color:#222838;border-radius:35%;width:auto}.container{display:flex}.title{text-align:center;padding-bottom:30%;padding-top:5%}.title i{color:#363c67;font-size:125px;background:rgb(148,148,179)}.title b{color:#363c67;font-size:100px;background:rgb(148,148,179);font-style:italic}.subtitle{text-align:center;padding-bottom:5%;padding-top:5%}.subtitle i{color:#363c67;font-size:125px;background:rgb(148,148,179)}.subtitle b{color:#363c67;font-size:100px;background:rgb(148,148,179);font-style:italic}.space{padding-top:2%}#status{color:#0f0}
+
+  </style>
+</head>
+<body>
+
+
+
+    <h1 class="title"><i>POOPFARTNUTS.COM</i>
+      
+      <div class="space"/>
+
+      now has a...</h1>
+
+    <h1 class="subtitle"><i>NORTHSTAR</i>
+
+      <div class="space"/>
+
+      <img src="northstar.png" alt="northstar logo" width="15%" id="image"> 
+
+      <div class="space"/>
+
+      <div/><b>SERVER</b></h1>
+
+
+    <h2>just search up poopfartnuts.com on the server list and you should find it(if its live)</h2>
+    <h1 id="status">connecting to server, give it a seconds</h1>
+    
+    <script>
+      function getStatus(){
+        let xhr = new XMLHttpRequest();
+        xhr.open('get', 'https://poopfartnuts-database.herokuapp.com/getData');
+        xhr.send();
+        xhr.onload = function() {
+            console.log(xhr.response);
+            if(xhr.response == "OPEN"){
+              document.getElementById("status").innerHTML = "server is up, check poopfartnuts.com on the server list"
+              document.getElementById("status").style.color = "rgb(0,255,0)"
+            }
+            if(xhr.response == "CLOSE"){
+              document.getElementById("status").innerHTML = "server is not up at the minute"
+              document.getElementById("status").style.color = "red"
+            }
+        };
+      }
+
+      var myInterval = setInterval(getStatus, 5000);
+    </script>
+</body>
+</html>

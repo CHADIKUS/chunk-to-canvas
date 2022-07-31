@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FARTMAP</title>
+  <link rel="stylesheet" href="/minecraft/mcStyle.css">
+  <link href="http://fonts.cdnfonts.com/css/doom-2016-left" rel="stylesheet">
+</head>
+<body>
+  <div class="bg">
+    <div class="boxBg">
+      
+      <div class="title">
+        <h1><img src="/minecraft/Stitle.png" alt="SHOPS" width="300"></h1>
+        <img src="/minecraft/MEsub.png" alt="monopolize everything" width="600">
+      </div>
+
+      <div class="sub-title">
+        <h1>MAKE A SHOP</h1>
+      </div>
+      
+      <h2>NOTE:</h2>
+      <h3>you will have to do /set_shop at your shop afterwards to mark your shop on the map</h3>
+
+
+      
+      <div>
+        <label class="label">shop name:</label>
+        <input type="text" id="shopName"><br>
+        <label class="label">what do you sell?</label>
+        <input type="checkbox" id="gear" >gear
+        <input type="checkbox" id="weapons" >weapons
+        <input type="checkbox" id="food" >food
+        <input type="checkbox" id="build" >building supplies
+        <input type="checkbox" id="other" >other<br>
+        <label class="label">what do you accept as payment?</label>
+        <input type="text" id="shopAccept"><br>
+        <label for="key" class="label">player key(do /key to see):</label>
+        <input type="password" id="key" name="name"><br><br>
+        <input type="button" id="submit" value="submit" onclick="submit()"><br>
+      </div>
+
+      <h2 id="status"></h2>
+
+      <script>
+        function submit(){
+          const name = document.getElementById("shopName").value;
+          const key = document.getElementById("key").value;
+          const accepts = document.getElementById("shopAccept").value;
+
+          var gear = document.getElementById("gear").checked;
+          var weapons = document.getElementById("weapons").checked;
+          var food = document.getElementById("food").checked;
+          var build = document.getElementById("build").checked;
+          var other = document.getElementById("other").checked;
+
+          if(document.getElementById("other").value == 1){
+            other = true
+          }else{
+            other = false
+          }
+
+          var user = "";
+
+          var status = "";
+
+          let xhr = new XMLHttpRequest();
+          xhr.open("POST", "http://localhost:3000/getuser")
+
+          xhr.setRequestHeader("Accept", "application/json");
+          xhr.setRequestHeader("Content-Type", "application/json");
+          
+          xhr.onload = function(){
+            if (xhr.readyState === xhr.DONE && xhr.status === 200) {
+              user = xhr.response
+              if(user != "" && user != "error"){
+    
+                let xhrNew = new XMLHttpRequest();
+                xhrNew.open("POST", "http://localhost:3000/makeShop")
+      
+                xhrNew.setRequestHeader("Accept", "application/json");
+                xhrNew.setRequestHeader("Content-Type", "application/json");
+                
+                xhrNew.onload = function(){
+                    console.log(xhrNew.response)
+
+                    document.getElementById("status").innerHTML = xhrNew.response
+
+                }
+
+
+      
+                let dataNew = `{"user": "${user}","name": "${name}","takes":"${accepts}","sellable": {"gear": ${gear},"weapons": ${weapons},"food": ${food},"build": ${build},"other": ${other}},"cords": {"x": null,"y": null,"z": null,"w":null}}`
+                console.log(dataNew)
+                xhrNew.send(dataNew)
+              }
+            }
+          }
+
+          let data = '{"key": "'+key+'"}'
+
+          xhr.send(data)
+        } 
+
+      </script>
+
+    </div>
+  </div>
+</body>
+</html>

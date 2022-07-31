@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FARTMAP</title>
+  <link rel="stylesheet" href="/minecraft/mcStyle.css">
+</head>
+<body>
+  <div class="bg">
+    <div class="boxBg">
+
+      <div class="title">
+        <h1>FARTMAP</h1>
+        <h2>see the world and the stuff people put on it</h2>
+      </div>
+      <br>
+      <h1>NOTE: spamming the move buttons WILL break it</h1>
+      <br>
+      <h2 id="positions">0,0</h2>
+      <br>
+      <canvas id="mapCanvas" width="512" height="512" style="border:1px solid #000000; background-color: #868686;"></canvas>
+      <br>
+      <button id="up" onclick="move('up')">up</button>
+      <br>
+      <button id="left" onclick="move('left')">left</button>
+      <button id="left" onclick="move('right')">right</button>
+      <br>
+      <button id="down" onclick="move('down')">down</button>
+      <br>
+      <div>
+        <label class="label">goto chunk cords:</label>
+        <input type="text" id="gotoX"><input type="text" id="gotoZ"><br>
+        <button onclick=gotoChunk()>submit</button>
+      </div>
+      <br>
+      <div>
+        <label class="label">shop name:</label>
+        <input type="text" id="shopName"><br>
+        <button onclick=loadShop()>submit</button>
+      </div>
+      <h1 id="dataShop"></h1>
+      <script src="map.js"></script>
+
+    </div>
+  </div>
+
+</body>
+</html>
