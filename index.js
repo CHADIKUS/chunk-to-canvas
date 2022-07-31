@@ -14,36 +14,6 @@ app.use(cors())
 
 app.use(express.static('public'));
 
-app.get('/', (req, res) => {
-    fs.readFile('public/index.html', 'utf8', (err, data) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
-    res.send(data);
-    });
-})
-
-app.get('/northstar', (req, res) => {
-    fs.readFile('public/northstar.html', 'utf8', (err, data) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
-    res.send(data);
-    });
-})
-
-app.get('/cube', (req, res) => {
-    fs.readFile('public/cube.html', 'utf8', (err, data) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
-    res.send(data);
-    });
-})
-
 app.get('/fartnutsmc', (req, res) => {
     fs.readFile('public/minecraft/index.html', 'utf8', (err, data) => {
     if (err) {
